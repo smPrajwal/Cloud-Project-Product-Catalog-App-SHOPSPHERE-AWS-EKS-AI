@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .env
 /Local_Notes.txt
+.terraform/
