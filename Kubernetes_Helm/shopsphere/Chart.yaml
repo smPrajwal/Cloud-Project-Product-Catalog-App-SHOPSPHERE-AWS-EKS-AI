@@ -1,0 +1,4 @@
+apiVersion: v2
+name: shopsphere
+version: 1.0.0
+description: ShopSphere E-Commerce Application

@@ -1,0 +1,226 @@
+/* 
+   ShopSphere Styles
+   Simple, clean, and modern look.
+*/
+
+/* --- 1. Main Settings --- */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --text-muted: #666666;
+    --accent-color: #000000;
+    --accent-hover: #333333;
+    --border-color: #eaeaea;
+    --hover-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+    /* Float effect */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--text-muted);
+}
+
+a .fw-bold:not(.text-danger) {
+    color: var(--text-color);
+    transition: none;
+}
+
+a:hover .fw-bold:not(.text-danger) {
+    color: var(--text-color);
+}
+
+/* --- 2. Navbar --- */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    /* See-through white */
+    backdrop-filter: blur(10px);
+    /* Blur background */
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+}
+
+/* --- 3. Category Buttons & Dark Backgrounds --- */
+/* Make all dark sections pure black */
+.bg-dark {
+    background-color: #000000 !important;
+}
+
+/* Only make the header's dark bar slim (Category Nav) */
+header .bg-dark {
+    padding: 0.25rem 0 !important;
+    border-bottom: none;
+}
+
+.category-link {
+    color: #999999 !important;
+    /* Gray text */
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.35rem 1.1rem;
+    border-radius: 50px;
+    /* Pill shape */
+    transition: all 0.25s ease;
+    display: inline-block;
+    margin: 0 0.5rem;
+    text-decoration: none;
+}
+
+.category-link:hover {
+    color: #ffffff !important;
+    /* White on hover */
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.category-link.active {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    /* White button */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* --- 4. Product Cards --- */
+.product-card {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    /* Rounded corners */
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    /* Lift up effect */
+    box-shadow: var(--hover-shadow);
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: contain !important;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.product-card:hover .card-img-top {
+    background-color: #f0f0f0;
+    /* Darker gray background */
+}
+
+.card-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    min-height: 3.2rem;
+    /* Space for 2 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.card-price {
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* --- 5. Buttons --- */
+.btn {
+    border-radius: 50px;
+    /* Pill shape */
+    padding: 0.6rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-dark {
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    background: transparent;
+}
+
+.btn-outline-dark:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff;
+}
+
+/* --- 6. Badges & Forms --- */
+.badge-minimal {
+    background: #f9f9f9;
+    border: 1px solid var(--border-color);
+    color: #666;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    display: inline-block;
+    margin-right: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    /* Soft glow */
+    border-color: var(--accent-color);
+}
+
+/* --- 7. Modals --- */
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shopsphere-app-cm
+data:
+  BACKEND_API_URL: http://backend-app-service:80
+  AWS_REGION: ap-south-1
+  S3_BUCKET_NAME: shopspherebucket

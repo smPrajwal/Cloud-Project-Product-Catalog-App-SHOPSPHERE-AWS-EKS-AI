@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend-app
+        image: backend-app:1.0
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: 150m
+            memory: 192Mi
+        envFrom:
+        - configMapRef:
+          name: shopsphere-app-cm
+        - secretRef:
+          name: shopsphere-app-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-app-service
+  labels:
+    app: backend
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000

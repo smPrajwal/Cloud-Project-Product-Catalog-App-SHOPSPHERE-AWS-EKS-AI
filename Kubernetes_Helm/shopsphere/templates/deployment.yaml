@@ -1,0 +1,33 @@
+{{- range $name, $values := .Values.services }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $values.deploymentName }}
+  labels:
+    {{ $values.label }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{ $values.label }}
+  template:
+    metadata:
+      labels:
+        {{ $values.label }}
+    spec:
+      containers:
+      - name: {{ $values.deploymentName }}
+        image: {{ $values.imageName }}:{{ $values.imageVersion }}
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: {{ $values.cpu }}
+            memory: {{ $values.memory }}
+        envFrom:
+        - configMapRef:
+            name: shopsphere-app-cm
+        - secretRef:
+            name: shopsphere-app-secret
+---
+{{- end }}

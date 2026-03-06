@@ -1,0 +1,25 @@
+flaskSecret: ""
+adminUsername: ""
+adminPassword: ""
+dbConnectionString: ""
+AwsRegion: ap-south-1
+s3BucketName: shopspherebucket
+services:
+  frontend:
+    deploymentName: frontend-app
+    label: "app: frontend"
+    imageName: frontend-app
+    imageVersion: "1.0"
+    hpaName: frontend-hpa
+    serviceName: frontend-app-service
+    cpu: "100m"
+    memory: "128Mi"
+  backend:
+    deploymentName: backend-app
+    label: "app: backend"
+    imageName: backend-app
+    imageVersion: "1.0"
+    hpaName: backend-hpa
+    serviceName: backend-app-service
+    cpu: "150m"
+    memory: "192Mi"

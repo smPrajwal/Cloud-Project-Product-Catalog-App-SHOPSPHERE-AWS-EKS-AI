@@ -1,0 +1,38 @@
+<footer class="bg-dark text-light pt-3 pb-3 mt-5">
+    <div class="container">
+        <div class="row justify-content-between">
+            <!-- Brand -->
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h5 class="fw-bold mb-3">ShopSphere</h5>
+                <p class="text-secondary small mb-0">{{ footer.footer_brand_description or 'Your destination for quality
+                    products that blend aesthetics with functionality.' }}</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h6 class="fw-bold mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Quick Links
+                </h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="/" class="text-secondary text-decoration-none">Home</a></li>
+                    <li class="mb-2"><a href="/about" class="text-secondary text-decoration-none">About Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-3">
+                <h6 class="fw-bold mb-3 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Contact Us</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><a href="mailto:{{ footer.footer_email or 'prajwalprajwal1999@gmail.com' }}"
+                            class="text-secondary text-decoration-none">{{ footer.footer_email or
+                            'prajwalprajwal1999@gmail.com' }}</a></li>
+                    <li class="mb-2 text-secondary">{{ footer.footer_phone or '+91 9035147223' }}</li>
+                </ul>
+            </div>
+        </div>
+        <hr class="my-4 border-secondary">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <p class="text-secondary small mb-2 mb-md-0">&copy; 2026 ShopSphere. All rights reserved.</p>
+            <p class="text-secondary small mb-0">Created by Prajwal S M</p>
+        </div>
+    </div>
+</footer>
