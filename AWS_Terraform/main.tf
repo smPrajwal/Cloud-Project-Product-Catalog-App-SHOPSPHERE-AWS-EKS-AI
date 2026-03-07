@@ -2,7 +2,7 @@ terraform {
   required_version = "~> 1.0"
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = ">= 6.35.0, < 7.0.0"
     }
   }
@@ -15,9 +15,12 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-south-1"
+  region = var.default_region
 }
 
-resource "aws_s3_bucket" "test_bucket" {
-  bucket = "terraform-cloud-test-bucket-123456"
+module "network" {
+  source = "./modules/network"
+
+  subnet_details = var.subnet_details
+  default_region = var.default_region
 }
