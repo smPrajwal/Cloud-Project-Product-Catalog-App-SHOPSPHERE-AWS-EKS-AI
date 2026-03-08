@@ -24,3 +24,9 @@ module "network" {
   subnet_details = var.subnet_details
   default_region = var.default_region
 }
+
+module "compute_EKS" {
+  source = "./modules/compute_EKS"
+
+  subnet_ids = module.network.subnet_ids
+}

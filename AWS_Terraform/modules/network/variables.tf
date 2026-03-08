@@ -6,5 +6,6 @@ variable "subnet_details" {
     cidr   = string
     access = string
     role   = string
+    az     = string
   }))
 }

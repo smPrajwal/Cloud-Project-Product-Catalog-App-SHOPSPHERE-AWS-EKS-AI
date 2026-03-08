@@ -7,20 +7,30 @@ subnet_details = {
     cidr   = "10.0.1.0/24"
     access = "public"
     role   = "public"
+    az     = "a"
   }
-  "application-EKS" = {
+  "application-EKS-AZ1" = {
     cidr   = "10.0.2.0/24"
     access = "private"
     role   = "application-EKS"
+    az     = "a"
   }
-  "rds-AZ1" = {
+  "application-EKS-AZ2" = {
     cidr   = "10.0.3.0/24"
     access = "private"
-    role   = "rds-az-1"
+    role   = "application-EKS"
+    az     = "b"
   }
-  "rds-AZ2" = {
+  "rds-AZ1" = {
     cidr   = "10.0.4.0/24"
     access = "private"
-    role   = "rds-az-2"
+    role   = "rds-sub"
+    az     = "a"
+  }
+  "rds-AZ2" = {
+    cidr   = "10.0.5.0/24"
+    access = "private"
+    role   = "rds-sub"
+    az     = "b"
   }
 }

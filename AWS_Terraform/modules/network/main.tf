@@ -2,7 +2,8 @@ resource "aws_vpc" "vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "VPC"
+    Name    = "VPC"
+    Project = "EKS_Project"
   }
 }
 
@@ -11,11 +12,12 @@ resource "aws_subnet" "subnet" {
 
   vpc_id                  = aws_vpc.vpc.id
   cidr_block              = each.value.cidr
-  availability_zone       = each.value.role != "rds-az-2" ? "${var.default_region}a" : "${var.default_region}b"
+  availability_zone       = "${var.default_region}${each.value.az}"
   map_public_ip_on_launch = each.value.access == "public" ? true : false
 
   tags = {
-    Name = "${each.key}-sub"
+    Name    = "${each.key}-sub"
+    Project = "EKS_Project"
   }
 }
 
@@ -23,7 +25,8 @@ resource "aws_internet_gateway" "internet-gw" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name = "internet-gateway"
+    Name    = "internet-gateway"
+    Project = "EKS_Project"
   }
 }
 
@@ -31,7 +34,8 @@ resource "aws_eip" "nat_eip" {
   domain = "vpc"
 
   tags = {
-    Name = "nat-eip"
+    Name    = "nat-eip"
+    Project = "EKS_Project"
   }
 }
 
@@ -40,7 +44,8 @@ resource "aws_nat_gateway" "nat-gw" {
   subnet_id     = aws_subnet.subnet["public"].id
 
   tags = {
-    Name = "NAT-gateway"
+    Name    = "NAT-gateway"
+    Project = "EKS_Project"
   }
 
   depends_on = [aws_internet_gateway.internet-gw]
@@ -55,7 +60,8 @@ resource "aws_route_table" "public-sub-rt" {
   }
 
   tags = {
-    Name = "public-sub-route-table"
+    Name    = "public-sub-route-table"
+    Project = "EKS_Project"
   }
 }
 
@@ -68,7 +74,8 @@ resource "aws_route_table" "private-sub-rt" {
   }
 
   tags = {
-    Name = "private-sub-route-table"
+    Name    = "private-sub-route-table"
+    Project = "EKS_Project"
   }
 }
 
