@@ -30,3 +30,11 @@ module "compute_EKS" {
 
   subnet_ids = module.network.subnet_ids
 }
+
+module "database" {
+  source = "./modules/database"
+
+  db_un      = var.db_un
+  db_pwd     = var.db_pwd
+  subnet_ids = module.network.subnet_ids
+}

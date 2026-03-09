@@ -4,6 +4,17 @@ variable "default_region" {
   type        = string
 }
 
+variable "db_un" {
+  description = "This will hold the username of SQL DB"
+  type        = string
+}
+
+variable "db_pwd" {
+  description = "This will hold the password of SQL DB"
+  type        = string
+  sensitive   = true
+}
+
 variable "subnet_details" {
   description = "This contains all the necessary details related to the subnets and their resources"
   type = map(object({

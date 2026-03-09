@@ -1,6 +1,6 @@
 default_region = "ap-south-1"
-
-
+db_un          = "prajwalsm"
+db_pwd         = "Prajwalsm53"
 
 subnet_details = {
   "public" = {

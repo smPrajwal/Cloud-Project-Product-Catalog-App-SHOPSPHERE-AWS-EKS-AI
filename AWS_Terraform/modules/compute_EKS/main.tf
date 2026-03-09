@@ -140,3 +140,20 @@ resource "aws_eks_access_policy_association" "admin-eks-access" {
     type = "cluster"
   }
 }
+
+resource "aws_ecr_repository" "ss-application-ecr" {
+  for_each = toset([
+    "ss-application-frontend",
+    "ss-application-backend"
+  ])
+  name                 = each.value
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Project = "EKS_Project"
+  }
+}
