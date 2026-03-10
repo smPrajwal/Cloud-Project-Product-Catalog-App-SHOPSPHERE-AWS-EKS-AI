@@ -15,6 +15,12 @@ variable "db_pwd" {
   sensitive   = true
 }
 
+variable "s3_bucket_name" {
+  description = "This represents the default S3 bucket name"
+  default     = "shopsphere-app-images-bucket"
+  type        = string
+}
+
 variable "subnet_details" {
   description = "This contains all the necessary details related to the subnets and their resources"
   type = map(object({

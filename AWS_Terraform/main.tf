@@ -38,3 +38,9 @@ module "database" {
   db_pwd     = var.db_pwd
   subnet_ids = module.network.subnet_ids
 }
+
+module "storage" {
+  source = "./modules/storage"
+
+  s3_bucket_name = var.s3_bucket_name
+}

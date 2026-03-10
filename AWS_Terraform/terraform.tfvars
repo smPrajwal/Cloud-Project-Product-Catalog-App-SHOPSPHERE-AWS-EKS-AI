@@ -1,7 +1,7 @@
 default_region = "ap-south-1"
 db_un          = "prajwalsm"
 db_pwd         = "Prajwalsm53"
-
+s3_bucket_name = "shopsphere-app-images-bucket"
 subnet_details = {
   "public" = {
     cidr   = "10.0.1.0/24"
