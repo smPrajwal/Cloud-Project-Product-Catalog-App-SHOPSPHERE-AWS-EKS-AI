@@ -62,3 +62,9 @@ module "aws_lambda" {
   db_endpoint    = module.database.db_endpoint
   rds_sg_id      = module.database.rds_sg_id
 }
+
+module "monitoring_and_alerts" {
+  source = "./modules/monitoring_and_alerts"
+
+  sns_alert_email = var.sns_alert_email
+}

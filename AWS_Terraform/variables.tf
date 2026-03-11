@@ -21,6 +21,12 @@ variable "s3_bucket_name" {
   type        = string
 }
 
+variable "sns_alert_email" {
+  description = "This represents the Mail ID which is subscribed to the SNS Topic"
+  default     = "prajwalprajwal1999@gmail.com"
+  type        = string
+}
+
 variable "subnet_details" {
   description = "This contains all the necessary details related to the subnets and their resources"
   type = map(object({

@@ -1,0 +1,1 @@
+variable "sns_alert_email" {}
