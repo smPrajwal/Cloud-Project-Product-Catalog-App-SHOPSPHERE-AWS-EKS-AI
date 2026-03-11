@@ -1,10 +1,10 @@
 variable "db_un" {}
-
+variable "vpc_id" {}
+variable "eks_node_sg_id" {}
+variable "lambda_sg_id" {}
 variable "db_pwd" {
   sensitive = true
 }
-
 variable "subnet_ids" {
-  description = "This holds all the subnet IDs"
-  type        = map(string)
+  type = map(string)
 }

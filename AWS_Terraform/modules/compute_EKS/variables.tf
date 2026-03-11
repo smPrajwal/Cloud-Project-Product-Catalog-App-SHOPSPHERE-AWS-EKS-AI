@@ -1,4 +1,4 @@
+variable "vpc_id" {}
 variable "subnet_ids" {
-  description = "This holds all the subnet IDs"
-  type        = map(string)
+  type = map(string)
 }

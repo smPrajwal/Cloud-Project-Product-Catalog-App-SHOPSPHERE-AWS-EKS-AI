@@ -13,6 +13,7 @@ resource "aws_eks_cluster" "eks-cluster" {
       var.subnet_ids["application-EKS-AZ1"],
       var.subnet_ids["application-EKS-AZ2"]
     ]
+    security_group_ids = [aws_security_group.eks-nodes-sg.id]
   }
 
   tags = {
@@ -20,7 +21,7 @@ resource "aws_eks_cluster" "eks-cluster" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy
   ]
 }
 
@@ -151,6 +152,39 @@ resource "aws_ecr_repository" "ss-application-ecr" {
 
   image_scanning_configuration {
     scan_on_push = true
+  }
+
+  tags = {
+    Project = "EKS_Project"
+  }
+}
+
+resource "aws_security_group" "eks-nodes-sg" {
+  name        = "eks-nodes-sg"
+  description = "Security group for EKS worker nodes"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description = "Allow traffic from ALB"
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow node to node communication"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    self        = true
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
