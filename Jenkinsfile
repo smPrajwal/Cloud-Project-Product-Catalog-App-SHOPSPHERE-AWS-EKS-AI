@@ -178,6 +178,8 @@ pipeline{
                         --set serviceAccount.create=false \
                         --set serviceAccount.name=aws-load-balancer-controller
 
+                    kubectl rollout status deployment aws-load-balancer-controller -n kube-system
+
                     helm upgrade --install shopsphere ./Kubernetes_Helm/shopsphere \
                         --set services.frontend.imageName=${ECR_FRONTEND} \
                         --set services.frontend.imageVersion=${IMAGE_TAG} \
@@ -192,7 +194,7 @@ pipeline{
                         --set ingressName="shopsphere-app-ingress"
                 """
                 script {
-                    sleep 60
+                    sh "kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' ingress/shopsphere-app-ingress --timeout=300s"
                     APP_URL = sh(
                         script: "kubectl get ingress shopsphere-app-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
                         returnStdout: true
