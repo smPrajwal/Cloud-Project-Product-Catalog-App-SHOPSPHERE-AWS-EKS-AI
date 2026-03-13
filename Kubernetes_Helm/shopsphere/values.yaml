@@ -4,6 +4,7 @@ adminPassword: ""
 dbConnectionString: ""
 AwsRegion: ap-south-1
 s3BucketName: shopspherebucket
+ingressName: "shopsphere-app-ingress"
 services:
   frontend:
     deploymentName: frontend-app
