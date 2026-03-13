@@ -170,6 +170,8 @@ pipeline{
                         --approve \
                         --region=${params.AWS_REGION}
 
+                    kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/crds?ref=master"
+
                     helm repo add eks https://aws.github.io/eks-charts
                     helm repo update
                     helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
