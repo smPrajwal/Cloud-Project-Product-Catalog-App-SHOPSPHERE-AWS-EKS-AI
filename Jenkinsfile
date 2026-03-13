@@ -4,6 +4,7 @@ def ECR_BACKEND = ''
 def ECR_REGISTRY = ''
 def S3_BUCKET_NAME = ''
 def DB_CONN_STRING = ''
+def VPC_ID = ''
 pipeline{
     agent any
     environment {
@@ -109,6 +110,10 @@ pipeline{
                         script: "cd AWS_Terraform && terraform output -raw db_conn_string",
                         returnStdout: true
                     ).trim()
+                    VPC_ID = sh(
+                        script: "cd AWS_Terraform && terraform output -raw vpc_id",
+                        returnStdout: true
+                    ).trim()
                 }
                 echo "--------- Infrastructure Building Completed: Infrastructure is built and ready! ----------"
             }
@@ -168,6 +173,7 @@ pipeline{
                         --name=aws-load-balancer-controller \
                         --attach-policy-arn=arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess \
                         --approve \
+                        --override-existing-serviceaccounts \
                         --region=${params.AWS_REGION}
 
                     kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/crds?ref=master"
@@ -178,7 +184,9 @@ pipeline{
                         -n kube-system \
                         --set clusterName=eks-cluster \
                         --set serviceAccount.create=false \
-                        --set serviceAccount.name=aws-load-balancer-controller
+                        --set serviceAccount.name=aws-load-balancer-controller \
+                        --set region=${params.AWS_REGION} \
+                        --set vpcId=${VPC_ID}
 
                     kubectl rollout status deployment aws-load-balancer-controller -n kube-system
 

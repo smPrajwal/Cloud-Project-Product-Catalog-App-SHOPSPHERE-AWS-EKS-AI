@@ -19,3 +19,7 @@ output "db_conn_string" {
   value       = module.database.db_conn_string
   sensitive   = true
 }
+output "vpc_id" {
+  description = "This holds the vpc ID"
+  value       = module.network.vpc_id
+}
