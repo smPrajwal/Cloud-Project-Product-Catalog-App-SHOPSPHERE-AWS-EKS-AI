@@ -10,6 +10,8 @@ pipeline{
         TF_TOKEN_app_terraform_io = credentials('tfc-token')
         IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         TF_VAR_app_admin_pwd = credentials('ShopSphere_App_Admin_Password')
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
     parameters {
         choice(
