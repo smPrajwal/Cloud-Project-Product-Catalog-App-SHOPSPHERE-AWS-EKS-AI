@@ -7,6 +7,7 @@ def DB_CONN_STRING = ''
 pipeline{
     agent any
     environment {
+        TF_TOKEN_app_terraform_io = credentials('tfc-token')
         IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         TF_VAR_app_admin_pwd = credentials('ShopSphere_App_Admin_Password')
     }
