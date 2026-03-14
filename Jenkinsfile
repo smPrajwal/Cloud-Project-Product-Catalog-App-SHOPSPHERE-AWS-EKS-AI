@@ -243,6 +243,10 @@ pipeline{
             steps{
                 echo "------- Started Tear down of the complete Infrastructure and Application -----------------"
                 sh """
+                    aws eks update-kubeconfig --name eks-cluster --region ${params.AWS_REGION} || true
+                    helm uninstall shopsphere || true
+                    helm uninstall aws-load-balancer-controller -n kube-system || true
+                    
                     aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
                     aws cloudformation delete-stack --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
                     aws cloudformation wait stack-delete-complete --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
