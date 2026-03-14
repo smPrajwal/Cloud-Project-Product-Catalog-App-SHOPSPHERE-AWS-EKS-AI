@@ -1,6 +1,6 @@
 output "eks_node_sg_id" {
   description = "This represents the Security Group of EKS nodes"
-  value       = aws_security_group.eks-nodes-sg.id
+  value       = aws_eks_cluster.eks-cluster.vpc_config[0].cluster_security_group_id
 }
 output "ecr_frontend_url" {
   value = aws_ecr_repository.ss-application-ecr["ss-application-frontend"].repository_url
