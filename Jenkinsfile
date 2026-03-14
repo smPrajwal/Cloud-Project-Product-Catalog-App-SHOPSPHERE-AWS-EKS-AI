@@ -172,6 +172,7 @@ pipeline{
                         --cluster eks-cluster \
                         --approve
 
+                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
                     aws cloudformation delete-stack --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
                     aws cloudformation wait stack-delete-complete --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
 
