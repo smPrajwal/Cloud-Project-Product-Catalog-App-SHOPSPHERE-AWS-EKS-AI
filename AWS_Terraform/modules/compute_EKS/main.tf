@@ -192,3 +192,12 @@ resource "aws_security_group" "eks-nodes-sg" {
     Project = "EKS_Project"
   }
 }
+
+resource "aws_iam_policy" "aws-lb-controller-IAMPolicy" {
+  name   = "AWSLoadBalancerControllerIAMPolicy"
+  policy = file("${path.module}/iam_policy.json")
+
+  tags = {
+    Project = "EKS_Project"
+  }
+}

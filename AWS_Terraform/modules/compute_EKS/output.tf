@@ -11,3 +11,7 @@ output "ecr_backend_url" {
 output "ecr_registry_url" {
   value = split("/", aws_ecr_repository.ss-application-ecr["ss-application-frontend"].repository_url)[0]
 }
+output "lbc_policy_arn" {
+  description = "ARN of the IAM policy for the AWS Load Balancer Controller"
+  value       = aws_iam_policy.aws-lb-controller-IAMPolicy.arn
+}

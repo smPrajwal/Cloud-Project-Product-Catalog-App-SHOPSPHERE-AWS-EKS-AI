@@ -5,6 +5,7 @@ def ECR_REGISTRY = ''
 def S3_BUCKET_NAME = ''
 def DB_CONN_STRING = ''
 def VPC_ID = ''
+def LBC_POLICY_ARN = ''
 pipeline{
     agent any
     environment {
@@ -114,6 +115,10 @@ pipeline{
                         script: "cd AWS_Terraform && terraform output -raw vpc_id",
                         returnStdout: true
                     ).trim()
+                    LBC_POLICY_ARN = sh(
+                        script: "cd AWS_Terraform && terraform output -raw lbc_policy_arn",
+                        returnStdout: true
+                    ).trim()
                 }
                 echo "--------- Infrastructure Building Completed: Infrastructure is built and ready! ----------"
             }
@@ -167,11 +172,14 @@ pipeline{
                         --cluster eks-cluster \
                         --approve
 
+                    aws cloudformation delete-stack --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation wait stack-delete-complete --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+
                     eksctl create iamserviceaccount \
                         --cluster=eks-cluster \
                         --namespace=kube-system \
                         --name=aws-load-balancer-controller \
-                        --attach-policy-arn=arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess \
+                        --attach-policy-arn=${LBC_POLICY_ARN} \
                         --approve \
                         --override-existing-serviceaccounts \
                         --region=${params.AWS_REGION}

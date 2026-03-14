@@ -23,3 +23,7 @@ output "vpc_id" {
   description = "This holds the vpc ID"
   value       = module.network.vpc_id
 }
+output "lbc_policy_arn" {
+  description = "ARN of the IAM policy for the AWS Load Balancer Controller"
+  value       = module.compute_EKS.lbc_policy_arn
+}
