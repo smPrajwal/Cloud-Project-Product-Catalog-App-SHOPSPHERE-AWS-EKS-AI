@@ -172,10 +172,6 @@ pipeline{
                         --cluster eks-cluster \
                         --approve
 
-                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-                    aws cloudformation delete-stack --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-                    aws cloudformation wait stack-delete-complete --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-
                     eksctl create iamserviceaccount \
                         --cluster=eks-cluster \
                         --namespace=kube-system \
@@ -247,6 +243,10 @@ pipeline{
             steps{
                 echo "------- Started Tear down of the complete Infrastructure and Application -----------------"
                 sh """
+                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation delete-stack --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation wait stack-delete-complete --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+
                     cd AWS_Terraform
                     terraform init -input=false
                     terraform destroy -auto-approve
