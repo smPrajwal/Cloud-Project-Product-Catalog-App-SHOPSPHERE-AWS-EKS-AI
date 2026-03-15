@@ -24,10 +24,11 @@ def upload_product_image(file, name):
 
         # Create Filename & Upload
         filename = f"product_{name}.jpg"
+        s3_key = f"product_images/{filename}"
         file.seek(0)  # Make sure we read from start
-        s3.upload_fileobj(file, s3_bucket, filename, ExtraArgs={'ContentType': 'image/jpeg'})
+        s3.upload_fileobj(file, s3_bucket, s3_key, ExtraArgs={'ContentType': 'image/jpeg'})
 
-        url = f"https://{s3_bucket}.s3.{aws_region}.amazonaws.com/{filename}"
+        url = f"https://{s3_bucket}.s3.{aws_region}.amazonaws.com/{s3_key}"
         return url, filename
     except Exception as e:
         print(f"Upload Error: {e}")
