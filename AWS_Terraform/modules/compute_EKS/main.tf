@@ -59,6 +59,11 @@ resource "aws_eks_node_group" "eks-cluster-ng" {
   instance_types = ["t3.small"]
   capacity_type  = "SPOT"
 
+  launch_template {
+    id      = aws_launch_template.eks-nodes-lt.id
+    version = aws_launch_template.eks-nodes-lt.latest_version
+  }
+
   scaling_config {
     desired_size = 1
     max_size     = 2
@@ -76,6 +81,20 @@ resource "aws_eks_node_group" "eks-cluster-ng" {
   depends_on = [
     aws_iam_role_policy_attachment.eks_ng_role_policies,
   ]
+}
+
+resource "aws_launch_template" "eks-nodes-lt" {
+  name_prefix = "eks-nodes-"
+
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 2
+  }
+
+  tags = {
+    Project = "EKS_Project"
+  }
 }
 
 resource "aws_iam_role" "eks-cluster-ng-role" {
