@@ -7,7 +7,7 @@ def seed_data(conn):
         # Base Image URL (Simple Check)
         bucket = os.environ.get('S3_BUCKET_NAME')
         region = os.environ['AWS_REGION']
-        base = f"https://{bucket}.s3.{region}.amazonaws.com/" if bucket else "/static/product_images/"
+        base = f"https://{bucket}.s3.{region}.amazonaws.com/product_images/" if bucket else "/static/product_images/"
 
         # Data Dictionary
         data = {
