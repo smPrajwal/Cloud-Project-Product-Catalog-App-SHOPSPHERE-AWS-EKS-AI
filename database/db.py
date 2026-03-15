@@ -53,8 +53,19 @@ def insert_get_id(sql, params=()):
     return id
 
 # 3. Setup Tables & Default Data
+def ensure_database():
+    conn_str = os.environ.get('DB_CONN_STRING')
+    if not conn_str: return
+    try:
+        conn = pyodbc.connect(conn_str.replace('DATABASE=shopsphere', 'DATABASE=master'), timeout=10, autocommit=True)
+        conn.cursor().execute("IF DB_ID('shopsphere') IS NULL CREATE DATABASE shopsphere")
+        conn.close()
+    except Exception as e:
+        print(f"LOG: DB creation warning: {e}")
+
 def init_db(app):
     with app.app_context():
+        ensure_database()
         if not get_db(): return
 
         # Create Tables (if they don't exist)
