@@ -226,12 +226,15 @@ pipeline{
             }
             steps{
                 echo "------------------------- Started Smoke Testing!... --------------------------------------"
-                sh """
-                    set -e
-                    URL="${APP_URL}"
-                    curl --fail --max-time 10 "\$URL/health"
-                    curl -s --max-time 10 "\$URL" | grep -q "ShopSphere"
-                """
+                retry(6) {
+                    sleep(time: 15, unit: 'SECONDS')
+                    sh """
+                        set -e
+                        URL="${APP_URL}"
+                        curl --fail --max-time 10 "\$URL/health"
+                        curl -s --max-time 10 "\$URL" | grep -q "ShopSphere"
+                    """
+                }
                 echo "--------- Smoke Testing Completed: The application is LIVE and working! ------------------"
             }
         }
