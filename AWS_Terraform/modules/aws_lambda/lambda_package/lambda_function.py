@@ -7,10 +7,12 @@ def lambda_handler(event, context):
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     image_key = event['Records'][0]['s3']['object']['key']
 
+    # Connect to MySQL
     conn_parts = os.environ["DB_CONN_STRING"].split(":")
     db = pymysql.connect(host=conn_parts[0], user=conn_parts[1], password=conn_parts[2], database=conn_parts[3])
     cur = db.cursor()
 
+    # Find product by image
     cur.execute("SELECT id FROM products WHERE thumbnail_url LIKE %s", ("%" + image_key + "%",))
     row = cur.fetchone()
 
@@ -20,11 +22,13 @@ def lambda_handler(event, context):
 
     product_id = row[0]
 
+    # Skip if tags already exist
     cur.execute("SELECT COUNT(*) FROM product_tags WHERE product_id = %s", (product_id,))
     if cur.fetchone()[0] > 0:
         db.close()
         return
 
+    # Get image tags from Rekognition
     try:
         rekognition = boto3.client("rekognition")
         result = rekognition.detect_labels(

@@ -26,7 +26,7 @@ resource "aws_lambda_function" "lambda-function" {
 
 data "archive_file" "lambda_code" {
   type        = "zip"
-  source_file = "${path.module}/lambda_function.py"
+  source_dir  = "${path.module}/lambda_package"
   output_path = "${path.module}/lambda_function.zip"
 }
 
@@ -96,8 +96,8 @@ resource "aws_security_group" "lambda-sg" {
 
   egress {
     description     = "Allow traffic to RDS"
-    from_port       = 1433
-    to_port         = 1433
+    from_port       = 3306
+    to_port         = 3306
     protocol        = "tcp"
     security_groups = [var.rds_sg_id]
   }

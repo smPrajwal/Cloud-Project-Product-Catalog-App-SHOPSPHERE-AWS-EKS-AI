@@ -1377,44 +1377,39 @@ def seed_data(conn):
           ]
         }
         
-        # --- Seed Products ---
         print("Checking Products...")
-        if cursor.execute("SELECT COUNT(*) FROM products").fetchone()[0] == 0:
+        cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM products")
+        if cur.fetchone()[0] == 0:
             print("Seeding Products...")
-            cursor.execute("SET IDENTITY_INSERT products ON")
             for p in data['products']:
                 img = base + p['thumbnail_url'].split('/')[-1]
                 cursor.execute(
-                    "INSERT INTO products (id, name, description, price, original_price, thumbnail_url) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO products (id, name, description, price, original_price, thumbnail_url) VALUES (%s, %s, %s, %s, %s, %s)",
                     (p['id'], p['name'], p['description'], p['price'], p['original_price'], img)
                 )
-            cursor.execute("SET IDENTITY_INSERT products OFF")
             print("Products seeded.")
             
-        # --- Seed Reviews ---
         print("Checking Reviews...")
-        if cursor.execute("SELECT COUNT(*) FROM reviews").fetchone()[0] == 0:
+        cur.execute("SELECT COUNT(*) FROM reviews")
+        if cur.fetchone()[0] == 0:
             print("Seeding Reviews...")
-            cursor.execute("SET IDENTITY_INSERT reviews ON")
             for r in data['reviews']:
                 cursor.execute(
-                    "INSERT INTO reviews (id, product_id, reviewer, review_text, sentiment_score, sentiment_label) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO reviews (id, product_id, reviewer, review_text, sentiment_score, sentiment_label) VALUES (%s, %s, %s, %s, %s, %s)",
                     (r['id'], r['product_id'], r['reviewer'], r['review_text'], r['sentiment_score'], r['sentiment_label'])
                 )
-            cursor.execute("SET IDENTITY_INSERT reviews OFF")
             print("Reviews seeded.")
 
-        # --- Seed Tags ---
         print("Checking Tags...")
-        if cursor.execute("SELECT COUNT(*) FROM product_tags").fetchone()[0] == 0:
+        cur.execute("SELECT COUNT(*) FROM product_tags")
+        if cur.fetchone()[0] == 0:
             print("Seeding Tags...")
-            cursor.execute("SET IDENTITY_INSERT product_tags ON")
             for t in data['product_tags']:
                 cursor.execute(
-                    "INSERT INTO product_tags (id, product_id, tag_name) VALUES (?, ?, ?)",
+                    "INSERT INTO product_tags (id, product_id, tag_name) VALUES (%s, %s, %s)",
                     (t['id'], t['product_id'], t['tag_name'])
                 )
-            cursor.execute("SET IDENTITY_INSERT product_tags OFF")
             print("Tags seeded.")
 
         conn.commit()

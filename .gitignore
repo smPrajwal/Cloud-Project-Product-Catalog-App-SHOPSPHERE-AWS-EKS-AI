@@ -5,3 +5,5 @@ __pycache__/
 .env
 /Local_Notes.txt
 .terraform/
+*.dist-info/
+lambda_function.zip
