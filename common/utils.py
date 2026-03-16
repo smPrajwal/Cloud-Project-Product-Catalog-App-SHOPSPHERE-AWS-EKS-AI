@@ -11,7 +11,8 @@ def analyze_sentiment(text):
         scores = result['SentimentScore']
         score = scores.get('Positive', 0.5)
         return {'score': round(score, 2), 'label': tag.capitalize()}
-    except:
+    except Exception as e:
+        print(f"Sentiment Error: {e}")
         return {'score': 0.5, 'label': 'Error'}
 
 # 2. Image Upload
