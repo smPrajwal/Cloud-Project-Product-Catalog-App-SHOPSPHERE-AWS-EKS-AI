@@ -256,6 +256,12 @@ pipeline{
 
                     cd AWS_Terraform
                     terraform init -input=false
+                    VPC_ID=\$(terraform output -raw vpc_id) || true
+                    SG_IDS=\$(aws ec2 describe-security-groups --filters Name=vpc-id,Values=\$VPC_ID --query "SecurityGroups[?GroupName!='default'].GroupId" --output text --region ${params.AWS_REGION}) || true
+                    for sg in \$SG_IDS; do
+                        echo "Deleting security group: \$sg"
+                        aws ec2 delete-security-group --group-id \$sg --region ${params.AWS_REGION} || true
+                    done
                     terraform destroy -auto-approve
                 """
                 echo "------- Infrastructure Tear down Completed: The Complete Infrastructure (with all the Resources) have been Cleaned-up -------"
