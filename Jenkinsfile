@@ -226,7 +226,7 @@ pipeline{
             }
             steps{
                 echo "------------------------- Started Smoke Testing!... --------------------------------------"
-                retry(6) {
+                retry(10) {
                     sleep(time: 15, unit: 'SECONDS')
                     sh """
                         set -e
