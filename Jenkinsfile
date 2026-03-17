@@ -50,7 +50,7 @@ pipeline{
                     test -f requirements_backend.txt
                     test -f requirements_frontend.txt
                 """
-                echo "----------------------- Testing Completed: All Checks passed in Testing! -----------------"
+                echo "---------------------- Testing Completed: All Checks passed in Testing! ------------------"
             }
         }
 
@@ -59,12 +59,12 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Deploy Infrastructure and Application'}
             }
             steps{
-                echo "-------------------------------------- Started Building Container Images!... -------------------------------"
+                echo "------------------------- Started Building Container Images!... --------------------------"
                 sh """
                     docker build -f Dockerfile.frontend -t frontend-app:${IMAGE_TAG} .
                     docker build -f Dockerfile.backend -t backend-app:${IMAGE_TAG} .
                 """
-                echo "----------------------- Image Build Successful: Container Images have been successfully Built! -----------------"
+                echo "-------- Image Build Successful: Container Images have been successfully Built! ----------"
             }
         }
 
@@ -81,7 +81,7 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Deploy Infrastructure and Application'}
             }
             steps{
-                echo "--------------- Started Building the Infrastructure using Terraform!... ------------------"
+                echo "-------------- Started Building the Infrastructure using Terraform!... -------------------"
                 sh """
                     cd AWS_Terraform
                     terraform init -input=false
@@ -129,7 +129,7 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Deploy Infrastructure and Application'}
             }
             steps{
-                echo "--------------- Starting to push the Docker Image to ECR!... ------------------"
+                echo "----------------- Starting to push the Docker Image to ECR!... ---------------------------"
                 sh """
                     aws ecr get-login-password --region ${params.AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
 
@@ -141,7 +141,7 @@ pipeline{
 
                     docker logout ${ECR_REGISTRY}
                 """
-                echo "--------- Docker Image push Completed: Container image has been pushed to ECR! ----------"
+                echo "-------- Docker Image push Completed: Container image has been pushed to ECR! ------------"
             }
         }
 
@@ -150,11 +150,11 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Deploy Infrastructure and Application'}
             }
             steps{
-                echo "--------------- Started to upload the product images to S3!... ------------------"
+                echo "---------------- Started to upload the product images to S3!... --------------------------"
                 sh """
                     aws s3 sync ./frontend/static/product_images s3://${S3_BUCKET_NAME}/product_images/ --region ${params.AWS_REGION}
                 """
-                echo "--------- Application Images uploaded Successfully: Product images have been uploaded to S3! ----------"
+                echo "------ Application Images uploaded Successfully: Product images have been uploaded to S3! -------"
             }
         }
 
@@ -163,7 +163,7 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Deploy Infrastructure and Application'}
             }
             steps{
-                echo "--------------- Started deploying Kubernetes resources to EKS!... ------------------"
+                echo "------------------ Started deploying Kubernetes resources to EKS!... ---------------------"
                 sh """
                     aws eks update-kubeconfig --region ${params.AWS_REGION} --name eks-cluster
 
@@ -216,7 +216,7 @@ pipeline{
                     ).trim()
                     APP_URL = "http://${APP_URL}"
                 }
-                echo "--------- Kubernetes resources deployed Successfully: K8 resources have been deployed to EKS using Helm! ----------"
+                echo "------ Kubernetes resources deployed Successfully: K8 resources have been deployed to EKS using Helm! ------"
             }
         }
 
@@ -225,7 +225,7 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Deploy Infrastructure and Application'}
             }
             steps{
-                echo "------------------------- Started Smoke Testing!... --------------------------------------"
+                echo "-------------------------- Started Smoke Testing!... --------------------------------------"
                 retry(8) {
                     sleep(time: 20, unit: 'SECONDS')
                     sh """
@@ -235,7 +235,7 @@ pipeline{
                         curl -s --max-time 10 "\$URL" | grep -q "ShopSphere"
                     """
                 }
-                echo "--------- Smoke Testing Completed: The application is LIVE and working! ------------------"
+                echo "---------- Smoke Testing Completed: The application is LIVE and working! ------------------"
             }
         }
 
@@ -244,7 +244,7 @@ pipeline{
                 expression {params.PIPELINE_ACTION == 'Destroy Infrastructure and Application'}
             }
             steps{
-                echo "------- Started Tear down of the complete Infrastructure and Application -----------------"
+                echo "--------- Started Tear down of the complete Infrastructure and Application ----------------"
                 sh """
                     aws eks update-kubeconfig --name eks-cluster --region ${params.AWS_REGION} || true
                     helm uninstall shopsphere || true
