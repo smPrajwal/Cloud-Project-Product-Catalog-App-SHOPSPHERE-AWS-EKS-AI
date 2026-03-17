@@ -57,7 +57,6 @@ module "aws_lambda" {
 
   vpc_id         = module.network.vpc_id
   subnet_ids     = module.network.subnet_ids
-  default_region = var.default_region
   s3_bucket_name = module.storage.s3_bucket_name
   db_endpoint    = module.database.db_conn_string
   rds_sg_id      = module.database.rds_sg_id

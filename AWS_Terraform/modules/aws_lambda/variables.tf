@@ -1,4 +1,3 @@
-variable "default_region" {}
 variable "s3_bucket_name" {}
 variable "vpc_id" {}
 variable "rds_sg_id" {}

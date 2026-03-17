@@ -178,8 +178,6 @@ resource "aws_ecr_repository" "ss-application-ecr" {
   }
 }
 
-
-
 resource "aws_iam_policy" "aws-lb-controller-IAMPolicy" {
   name   = "AWSLoadBalancerControllerIAMPolicy"
   policy = file("${path.module}/iam_policy.json")
