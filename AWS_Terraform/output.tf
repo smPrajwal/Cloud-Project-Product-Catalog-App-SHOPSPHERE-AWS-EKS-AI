@@ -27,3 +27,7 @@ output "lbc_policy_arn" {
   description = "ARN of the IAM policy for the AWS Load Balancer Controller"
   value       = module.compute_EKS.lbc_policy_arn
 }
+output "eks_cluster_name" {
+  description = "Name of the provisioned EKS cluster"
+  value       = module.compute_EKS.eks_cluster_name
+}

@@ -3,13 +3,13 @@ adminUsername: ""
 adminPassword: ""
 dbConnectionString: ""
 AwsRegion: ap-south-1
-s3BucketName: shopspherebucket
+s3BucketName: ""
 ingressName: "shopsphere-app-ingress"
 services:
   frontend:
     deploymentName: frontend-app
     label: "app: frontend"
-    imageName: frontend-app
+    imageName: ""
     imageVersion: "1.0"
     hpaName: frontend-hpa
     serviceName: frontend-app-service
@@ -18,7 +18,7 @@ services:
   backend:
     deploymentName: backend-app
     label: "app: backend"
-    imageName: backend-app
+    imageName: ""
     imageVersion: "1.0"
     hpaName: backend-hpa
     serviceName: backend-app-service

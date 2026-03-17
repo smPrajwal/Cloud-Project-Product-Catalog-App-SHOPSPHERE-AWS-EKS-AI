@@ -6,14 +6,19 @@ def S3_BUCKET_NAME = ''
 def DB_CONN_STRING = ''
 def VPC_ID = ''
 def LBC_POLICY_ARN = ''
+def EKS_CLUSTER_NAME = ''
 pipeline{
     agent any
     environment {
-        TF_TOKEN_app_terraform_io = credentials('tfc-token')
-        IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-        TF_VAR_app_admin_pwd = credentials('ShopSphere_App_Admin_Password')
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        app_admin_pwd = credentials('ShopSphere_App_Admin_Password')
+        Flask_Secret = credentials('Flask_Secret')
+        TF_TOKEN_app_terraform_io = credentials('tfc-token')
+        TF_VAR_db_pwd = credentials('aws_eks_proj_db_password')
+        TF_VAR_default_region = "${params.AWS_REGION}"
+        IMAGE_TAG = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+        Ingress_Name = "shopsphere-app-ingress"
     }
     parameters {
         choice(
@@ -119,6 +124,10 @@ pipeline{
                         script: "cd AWS_Terraform && terraform output -raw lbc_policy_arn",
                         returnStdout: true
                     ).trim()
+                    EKS_CLUSTER_NAME = sh(
+                        script: "cd AWS_Terraform && terraform output -raw eks_cluster_name",
+                        returnStdout: true
+                    ).trim()
                 }
                 echo "--------- Infrastructure Building Completed: Infrastructure is built and ready! ----------"
             }
@@ -165,15 +174,15 @@ pipeline{
             steps{
                 echo "------------------ Started deploying Kubernetes resources to EKS!... ---------------------"
                 sh """
-                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name eks-cluster
+                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name ${EKS_CLUSTER_NAME}
 
                     eksctl utils associate-iam-oidc-provider \
                         --region ${params.AWS_REGION} \
-                        --cluster eks-cluster \
+                        --cluster ${EKS_CLUSTER_NAME} \
                         --approve
 
                     eksctl create iamserviceaccount \
-                        --cluster=eks-cluster \
+                        --cluster=${EKS_CLUSTER_NAME} \
                         --namespace=kube-system \
                         --name=aws-load-balancer-controller \
                         --attach-policy-arn=${LBC_POLICY_ARN} \
@@ -187,7 +196,7 @@ pipeline{
                     helm repo update
                     helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
                         -n kube-system \
-                        --set clusterName=eks-cluster \
+                        --set clusterName=${EKS_CLUSTER_NAME} \
                         --set serviceAccount.create=false \
                         --set serviceAccount.name=aws-load-balancer-controller \
                         --set region=${params.AWS_REGION} \
@@ -202,16 +211,16 @@ pipeline{
                         --set services.backend.imageVersion=${IMAGE_TAG} \
                         --set s3BucketName=${S3_BUCKET_NAME} \
                         --set AwsRegion=${params.AWS_REGION} \
-                        --set flaskSecret="3f8a2b9c7d4e1f6a0b5c8d2e9f3a7b4c6d1e8f2a5b9c3d7e0f4a8b2c6d9e1f3a" \
+                        --set flaskSecret=${Flask_Secret} \
                         --set adminUsername="admin" \
-                        --set adminPassword=${TF_VAR_app_admin_pwd} \
+                        --set adminPassword=${app_admin_pwd} \
                         --set dbConnectionString="${DB_CONN_STRING}" \
-                        --set ingressName="shopsphere-app-ingress"
+                        --set ingressName=${Ingress_Name}
                 """
                 script {
-                    sh "kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' ingress/shopsphere-app-ingress --timeout=300s"
+                    sh "kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' ingress/${Ingress_Name} --timeout=300s"
                     APP_URL = sh(
-                        script: "kubectl get ingress shopsphere-app-ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
+                        script: "kubectl get ingress ${Ingress_Name} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
                         returnStdout: true
                     ).trim()
                     APP_URL = "http://${APP_URL}"
@@ -246,14 +255,14 @@ pipeline{
             steps{
                 echo "--------- Started Tear down of the complete Infrastructure and Application ----------------"
                 sh """
-                    aws eks update-kubeconfig --name eks-cluster --region ${params.AWS_REGION} || true
+                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name ${EKS_CLUSTER_NAME} || true
                     helm uninstall shopsphere || true
                     sleep 90
                     helm uninstall aws-load-balancer-controller -n kube-system || true
                     
-                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-                    aws cloudformation delete-stack --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-                    aws cloudformation wait stack-delete-complete --stack-name eksctl-eks-cluster-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-${EKS_CLUSTER_NAME}-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation delete-stack --stack-name eksctl-${EKS_CLUSTER_NAME}-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation wait stack-delete-complete --stack-name eksctl-${EKS_CLUSTER_NAME}-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
 
                     cd AWS_Terraform
                     terraform init -input=false
