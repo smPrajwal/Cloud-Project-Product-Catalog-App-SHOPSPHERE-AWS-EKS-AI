@@ -255,17 +255,19 @@ pipeline{
             steps{
                 echo "--------- Started Tear down of the complete Infrastructure and Application ----------------"
                 sh """
-                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name ${EKS_CLUSTER_NAME} || true
+                    cd AWS_Terraform
+                    terraform init -input=false
+                    EKS_CLUSTER_NAME=\$(terraform output -raw eks_cluster_name)
+                    
+                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name \$EKS_CLUSTER_NAME || true
                     helm uninstall shopsphere || true
                     sleep 90
                     helm uninstall aws-load-balancer-controller -n kube-system || true
                     
-                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-${EKS_CLUSTER_NAME}-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-                    aws cloudformation delete-stack --stack-name eksctl-${EKS_CLUSTER_NAME}-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
-                    aws cloudformation wait stack-delete-complete --stack-name eksctl-${EKS_CLUSTER_NAME}-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation update-termination-protection --no-enable-termination-protection --stack-name eksctl-\$EKS_CLUSTER_NAME-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation delete-stack --stack-name eksctl-\$EKS_CLUSTER_NAME-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
+                    aws cloudformation wait stack-delete-complete --stack-name eksctl-\$EKS_CLUSTER_NAME-addon-iamserviceaccount-kube-system-aws-load-balancer-controller --region ${params.AWS_REGION} || true
 
-                    cd AWS_Terraform
-                    terraform init -input=false
                     terraform destroy -auto-approve
                 """
                 echo "------- Infrastructure Tear down Completed: The Complete Infrastructure (with all the Resources) have been Cleaned-up -------"
