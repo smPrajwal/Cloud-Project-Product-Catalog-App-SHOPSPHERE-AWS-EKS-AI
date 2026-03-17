@@ -226,8 +226,8 @@ pipeline{
             }
             steps{
                 echo "------------------------- Started Smoke Testing!... --------------------------------------"
-                retry(10) {
-                    sleep(time: 15, unit: 'SECONDS')
+                retry(8) {
+                    sleep(time: 20, unit: 'SECONDS')
                     sh """
                         set -e
                         URL="${APP_URL}"

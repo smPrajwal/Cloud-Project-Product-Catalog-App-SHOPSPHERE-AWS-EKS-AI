@@ -5,7 +5,7 @@ resource "aws_lambda_function" "lambda-function" {
   handler       = "lambda_function.lambda_handler"
   code_sha256   = data.archive_file.lambda_code.output_base64sha256
 
-  runtime = "python3.12"
+  runtime = var.lambda_runtime
   timeout = 30
 
   environment {

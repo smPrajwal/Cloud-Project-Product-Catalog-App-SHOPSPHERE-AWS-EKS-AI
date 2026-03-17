@@ -1,12 +1,12 @@
 resource "aws_eks_cluster" "eks-cluster" {
-  name = "eks-cluster"
+  name = var.eks_cluster_name
 
   access_config {
     authentication_mode = "API"
   }
 
   role_arn = aws_iam_role.eks-cluster-role.arn
-  version  = "1.35"
+  version  = var.eks_version
 
   vpc_config {
     subnet_ids = [
@@ -56,8 +56,8 @@ resource "aws_eks_node_group" "eks-cluster-ng" {
     var.subnet_ids["application-EKS-AZ1"],
     var.subnet_ids["application-EKS-AZ2"]
   ]
-  instance_types = ["t3.small"]
-  capacity_type  = "SPOT"
+  instance_types = var.node_instance_types
+  capacity_type  = var.node_capacity_type
 
   launch_template {
     id      = aws_launch_template.eks-nodes-lt.id
@@ -65,9 +65,9 @@ resource "aws_eks_node_group" "eks-cluster-ng" {
   }
 
   scaling_config {
-    desired_size = 1
-    max_size     = 2
-    min_size     = 1
+    desired_size = var.node_desired_size
+    max_size     = var.node_max_size
+    min_size     = var.node_min_size
   }
 
   update_config {

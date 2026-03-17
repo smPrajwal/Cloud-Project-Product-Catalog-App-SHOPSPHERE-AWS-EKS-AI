@@ -1,6 +1,7 @@
 variable "s3_bucket_name" {}
 variable "vpc_id" {}
 variable "rds_sg_id" {}
+variable "lambda_runtime" {}
 variable "db_endpoint" {
   sensitive = true
 }

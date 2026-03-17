@@ -8,14 +8,14 @@ resource "aws_db_subnet_group" "rds-db-sub-group" {
 }
 
 resource "aws_db_instance" "rds-db" {
-  allocated_storage      = 20
+  allocated_storage      = var.db_allocated_storage
   engine                 = "mysql"
-  engine_version         = "8.0"
-  instance_class         = "db.t3.micro"
+  engine_version         = var.db_engine_version
+  instance_class         = var.db_instance_class
   username               = var.db_un
   password               = var.db_pwd
   skip_final_snapshot    = true
-  db_name                = "shopsphere"
+  db_name                = var.db_name
   identifier             = "ss-rds-db"
   vpc_security_group_ids = [aws_security_group.rds-sg.id]
   db_subnet_group_name   = aws_db_subnet_group.rds-db-sub-group.name

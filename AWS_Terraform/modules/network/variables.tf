@@ -1,3 +1,4 @@
+variable "vpc_cidr" {}
 variable "default_region" {}
 variable "subnet_details" {
   type = map(object({
