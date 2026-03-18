@@ -1,12 +1,7 @@
 def APP_URL = ''
 def ECR_FRONTEND = ''
 def ECR_BACKEND = ''
-def ECR_REGISTRY = ''
 def S3_BUCKET_NAME = ''
-def DB_CONN_STRING = ''
-def VPC_ID = ''
-def LBC_POLICY_ARN = ''
-def EKS_CLUSTER_NAME = ''
 pipeline{
     agent any
     environment {
@@ -104,28 +99,8 @@ pipeline{
                         script: "cd AWS_Terraform && terraform output -raw ecr_backend_url",
                         returnStdout: true
                     ).trim()
-                    ECR_REGISTRY = sh(
-                        script: "cd AWS_Terraform && terraform output -raw ecr_registry_url",
-                        returnStdout: true
-                    ).trim()
                     S3_BUCKET_NAME = sh(
                         script: 'cd AWS_Terraform && terraform output -raw s3_bucket_name',
-                        returnStdout: true
-                    ).trim()
-                    DB_CONN_STRING = sh(
-                        script: "cd AWS_Terraform && terraform output -raw db_conn_string",
-                        returnStdout: true
-                    ).trim()
-                    VPC_ID = sh(
-                        script: "cd AWS_Terraform && terraform output -raw vpc_id",
-                        returnStdout: true
-                    ).trim()
-                    LBC_POLICY_ARN = sh(
-                        script: "cd AWS_Terraform && terraform output -raw lbc_policy_arn",
-                        returnStdout: true
-                    ).trim()
-                    EKS_CLUSTER_NAME = sh(
-                        script: "cd AWS_Terraform && terraform output -raw eks_cluster_name",
                         returnStdout: true
                     ).trim()
                 }
@@ -140,7 +115,11 @@ pipeline{
             steps{
                 echo "----------------- Starting to push the Docker Image to ECR!... ---------------------------"
                 sh """
-                    aws ecr get-login-password --region ${params.AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                    cd AWS_Terraform
+                    terraform init -input=false
+                    ECR_REGISTRY=\$(terraform output -raw ecr_registry_url)
+
+                    aws ecr get-login-password --region ${params.AWS_REGION} | docker login --username AWS --password-stdin \$ECR_REGISTRY
 
                     docker tag frontend-app:${IMAGE_TAG} ${ECR_FRONTEND}:${IMAGE_TAG}
                     docker tag backend-app:${IMAGE_TAG} ${ECR_BACKEND}:${IMAGE_TAG}
@@ -148,7 +127,7 @@ pipeline{
                     docker push ${ECR_FRONTEND}:${IMAGE_TAG}
                     docker push ${ECR_BACKEND}:${IMAGE_TAG}
 
-                    docker logout ${ECR_REGISTRY}
+                    docker logout \$ECR_REGISTRY
                 """
                 echo "-------- Docker Image push Completed: Container image has been pushed to ECR! ------------"
             }
@@ -174,18 +153,26 @@ pipeline{
             steps{
                 echo "------------------ Started deploying Kubernetes resources to EKS!... ---------------------"
                 sh """
-                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name ${EKS_CLUSTER_NAME}
+                    cd AWS_Terraform
+                    terraform init -input=false
+                    EKS_CLUSTER_NAME=\$(terraform output -raw eks_cluster_name)
+                    LBC_POLICY_ARN=\$(terraform output -raw lbc_policy_arn)
+                    VPC_ID=\$(terraform output -raw vpc_id)
+                    DB_CONN_STRING=\$(terraform output -raw db_conn_string)
+                    cd ..
+
+                    aws eks update-kubeconfig --region ${params.AWS_REGION} --name \$EKS_CLUSTER_NAME
 
                     eksctl utils associate-iam-oidc-provider \
                         --region ${params.AWS_REGION} \
-                        --cluster ${EKS_CLUSTER_NAME} \
+                        --cluster \$EKS_CLUSTER_NAME \
                         --approve
 
                     eksctl create iamserviceaccount \
-                        --cluster=${EKS_CLUSTER_NAME} \
+                        --cluster=\$EKS_CLUSTER_NAME \
                         --namespace=kube-system \
                         --name=aws-load-balancer-controller \
-                        --attach-policy-arn=${LBC_POLICY_ARN} \
+                        --attach-policy-arn=\$LBC_POLICY_ARN \
                         --approve \
                         --override-existing-serviceaccounts \
                         --region=${params.AWS_REGION}
@@ -196,11 +183,11 @@ pipeline{
                     helm repo update
                     helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller \
                         -n kube-system \
-                        --set clusterName=${EKS_CLUSTER_NAME} \
+                        --set clusterName=\$EKS_CLUSTER_NAME \
                         --set serviceAccount.create=false \
                         --set serviceAccount.name=aws-load-balancer-controller \
                         --set region=${params.AWS_REGION} \
-                        --set vpcId=${VPC_ID}
+                        --set vpcId=\$VPC_ID
 
                     kubectl rollout status deployment aws-load-balancer-controller -n kube-system
 
@@ -214,7 +201,7 @@ pipeline{
                         --set flaskSecret=${Flask_Secret} \
                         --set adminUsername="admin" \
                         --set adminPassword=${app_admin_pwd} \
-                        --set dbConnectionString="${DB_CONN_STRING}" \
+                        --set dbConnectionString="\$DB_CONN_STRING" \
                         --set ingressName=${Ingress_Name}
                 """
                 script {
