@@ -421,7 +421,7 @@ What admins can do:
 - **Delete Product** — Removes the product, its tags, and all its reviews.
 - **Delete Reviews** — Remove individual reviews from the product page.
 
-### 3. REST APIs (Backend)
+### 2. REST APIs (Backend)
 
 | Endpoint | Method | Auth | What it does |
 |----------|--------|------|--------------|
@@ -437,7 +437,7 @@ What admins can do:
 
 The frontend proxies `/api/*` requests to the backend service, forwarding the `X-Admin` header for admin auth.
 
-### 4. AI Integration
+### 3. AI Integration
 
 **Image Tagging (Rekognition + Lambda):**
 Admin uploads image → S3 → Lambda trigger → Rekognition `detect_labels` (up to 8 labels, ≥70% confidence) → tags saved to `product_tags` table → used for filtering, search, recommendations.
@@ -449,7 +449,7 @@ User submits review → backend calls Comprehend `detect_sentiment` → gets lab
 
 ![Sentiment Analysis](docs/screenshots/sentiment_analysis.png)
 
-### 5. Database Schema
+### 4. Database Schema
 
 Five tables, auto-created on startup. Sample data is seeded when tables are empty.
 
@@ -461,7 +461,7 @@ Five tables, auto-created on startup. Sample data is seeded when tables are empt
 | `advertisements` | Carousel ads | `id`, `badge`, `title`, `subtitle`, `button_text`, `category`, `image_url`, `gradient` |
 | `site_settings` | App config | `key`, `value` |
 
-### 6. Frontend Tech
+### 5. Frontend Tech
 
 - **Jinja2 Templates** — 3 pages + 2 reusable components (navbar, footer)
 - **Bootstrap 5** — Grid, cards, modals, carousel
@@ -469,7 +469,7 @@ Five tables, auto-created on startup. Sample data is seeded when tables are empt
 - **Inter Font** (Google Fonts) — Typography
 - **Indian Currency** — ₹ with comma grouping (e.g., ₹1,00,000) via custom Jinja2 filter
 
-### 7. Split-Architecture
+### 6. Split-Architecture
 
 Single codebase, conditionally loads modules:
 - **Frontend Pods** — `routes_ui.py` only (UI + API proxy to backend via K8s service)
