@@ -411,7 +411,7 @@ HTTP Basic Auth — browser prompts for username and password. Credentials come 
 
 Returns `200 OK`. Used by ALB health checks, K8s probes, and the Jenkins smoke test.
 
-### 2. Admin Portal & Product Management
+#### Add Product
 
 ![Admin Add Product](docs/screenshots/admin_add_product.png)
 
