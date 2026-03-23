@@ -24,6 +24,10 @@ resource "aws_cloudwatch_metric_alarm" "eks-node-cpu-alarm" {
   alarm_description   = "EKS node CPU utilization exceeded 70%"
   alarm_actions       = [aws_sns_topic.ss-app-resource-sns-alerts.arn]
 
+  dimensions = {
+    AutoScalingGroupName = var.node_group_asg_name
+  }
+
   tags = {
     Project = "EKS_Project"
   }

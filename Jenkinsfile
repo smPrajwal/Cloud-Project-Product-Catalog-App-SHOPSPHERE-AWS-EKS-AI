@@ -191,6 +191,8 @@ pipeline{
 
                     kubectl rollout status deployment aws-load-balancer-controller -n kube-system
 
+                    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
                     helm upgrade --install shopsphere ./Kubernetes_Helm/shopsphere \
                         --set services.frontend.imageName=${ECR_FRONTEND} \
                         --set services.frontend.imageVersion=${IMAGE_TAG} \

@@ -78,5 +78,6 @@ module "aws_lambda" {
 module "monitoring_and_alerts" {
   source = "./modules/monitoring_and_alerts"
 
-  sns_alert_email = var.sns_alert_email
+  sns_alert_email     = var.sns_alert_email
+  node_group_asg_name = module.compute_EKS.node_group_asg_name
 }

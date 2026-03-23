@@ -19,3 +19,7 @@ output "eks_cluster_name" {
   description = "Name of the provisioned EKS cluster"
   value       = aws_eks_cluster.eks-cluster.name
 }
+output "node_group_asg_name" {
+  description = "Auto Scaling Group name of the EKS node group"
+  value       = aws_eks_node_group.eks-cluster-ng.resources[0].autoscaling_groups[0].name
+}
