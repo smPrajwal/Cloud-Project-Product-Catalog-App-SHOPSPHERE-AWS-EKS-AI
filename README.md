@@ -2,7 +2,7 @@
 
 A fully automated, end-to-end cloud deployment of a product catalog web application on AWS. The application runs as containerized microservices on EKS (Elastic Kubernetes Service), with the entire infrastructure provisioned through Terraform. Includes a Jenkins CI/CD pipeline, Helm-based Kubernetes deployments, AI-powered image tagging using Rekognition and sentiment analysis using Comprehend, Horizontal Pod Autoscaling, and CloudWatch monitoring with SNS alerts.
 
-📂 **[Project Demo & Resources (Google Drive)](https://drive.google.com/drive/folders/1sYyktNkMw_YCGyhWtr0BsFAKUanTixTy)** — Contains the project demo video and related files.
+📂 **[Project Demo & Resources (Google Drive)](https://drive.google.com/drive/folders/1jdCNKH5LpH2cl4W3ouOL3Q5EWulntH_M?usp=sharing)** — Contains the project related files.
 
 ## What This Project Demonstrates
 
@@ -322,8 +322,6 @@ The Lambda function runs Python 3.12 with `pymysql` bundled in. It's inside the 
 
 ### Monitoring and Alerts
 
-![CloudWatch Alarms](docs/screenshots/cloudwatch_alarms.png)
-
 Two CloudWatch alarms are set up:
 
 | Alarm | What it watches | Threshold |
@@ -395,8 +393,6 @@ Click any product card to get here. Shows:
 - **Review Form** — Submit a review → Comprehend analyzes it instantly.
 - **Recommendations** — "You might also like" section with up to 5 products that share the same tags.
 
-![Product Recommendations](docs/screenshots/product_recommendations.png)
-
 - **Admin Controls** (when logged in) — Image upload and review delete buttons.
 
 #### About Page (`/about`)
@@ -424,8 +420,6 @@ What admins can do:
 - **Change Product Image** — Upload on the product page. Old tags get cleared, S3 upload triggers Lambda for fresh AI tags.
 - **Delete Product** — Removes the product, its tags, and all its reviews.
 - **Delete Reviews** — Remove individual reviews from the product page.
-
-![Admin Delete Product](docs/screenshots/admin_delete_product.png)
 
 ### 3. REST APIs (Backend)
 
