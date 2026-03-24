@@ -44,7 +44,7 @@ The core of this project is **ShopSphere**, a fully functional product catalog w
 
 For the complete breakdown of every page, API endpoint, database schema, and architecture details, see [**The Web Application — Detailed Description**](#the-web-application--detailed-description) below.
 
-## Architecture Overview
+## Architecture Overview in AWS
 
 ![Architecture Diagram](docs/screenshots/architecture_diagram.png)
 
@@ -102,7 +102,7 @@ For the complete breakdown of every page, API endpoint, database schema, and arc
                                                                           │  │
                     ┌─────────────────────────────────────────────────────┘  │
                     │                                                        │
-           ┌───────▼──────────┐                                ┌────────────▼───────────┐
+           ┌────────▼─────────┐                                ┌─────────────▼──────────┐
            │   S3 Bucket      │                                │   AWS Rekognition      │
            │ (Product Images) │── S3 event triggers Lambda ──► │   (Image Labeling)     │
            └──────────────────┘                                └────────────────────────┘
