@@ -280,7 +280,7 @@ pipeline{
                     attachLog: true, 
                     compressLog: true,
                     body: """
-                        <b>The Pipeline was executed using the below Parameter:</b><br/>
+                        <b>The Pipeline was executed using the below value of the 'PIPELINE_ACTION' Parameter:</b><br/>
                         RUN_TYPE: ${params.PIPELINE_ACTION}
                         <br/><br/>
                         \$DEFAULT_CONTENT
