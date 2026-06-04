@@ -131,8 +131,7 @@ resource "aws_iam_role_policy_attachment" "eks_ng_role_policies" {
 
 resource "aws_eks_access_entry" "eks-access-entry" {
   for_each = toset([
-    "arn:aws:iam::676290433104:root",
-    "arn:aws:iam::676290433104:user/Prajwal"
+    "arn:aws:iam::623675319723:root",
   ])
 
   cluster_name  = aws_eks_cluster.eks-cluster.name
@@ -147,8 +146,7 @@ resource "aws_eks_access_entry" "eks-access-entry" {
 
 resource "aws_eks_access_policy_association" "admin-eks-access" {
   for_each = toset([
-    "arn:aws:iam::676290433104:root",
-    "arn:aws:iam::676290433104:user/Prajwal"
+    "arn:aws:iam::623675319723:root",
   ])
 
   cluster_name  = aws_eks_cluster.eks-cluster.name
