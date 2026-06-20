@@ -23,10 +23,25 @@ spec:
           requests:
             cpu: {{ $values.cpu }}
             memory: {{ $values.memory }}
+          limits:
+            cpu: {{ $values.cpuLimit }}
+            memory: {{ $values.memoryLimit }}
         envFrom:
         - configMapRef:
             name: shopsphere-app-cm
         - secretRef:
             name: shopsphere-app-secret
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
 ---
 {{- end }}

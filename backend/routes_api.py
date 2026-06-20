@@ -4,6 +4,26 @@ from common.utils import analyze_sentiment
 
 api_bp = Blueprint('api', __name__)
 
+# --- Kubernetes Health Probes ---
+
+@api_bp.route('/healthz')
+def healthz():
+    """Liveness probe - confirms the process is running."""
+    return jsonify({'status': 'alive'}), 200
+
+@api_bp.route('/readyz')
+def readyz():
+    """Readiness probe - confirms DB connectivity."""
+    try:
+        from database.db import get_db
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute('SELECT 1')
+        cursor.close()
+        return jsonify({'status': 'ready'}), 200
+    except Exception as e:
+        return jsonify({'status': 'not ready', 'error': str(e)}), 503
+
 # Helper: Find Product ID from Number or Name
 def resolve_id(id_or_slug):
     if str(id_or_slug).isdigit():

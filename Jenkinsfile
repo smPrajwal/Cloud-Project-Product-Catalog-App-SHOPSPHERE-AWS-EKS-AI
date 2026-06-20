@@ -229,7 +229,7 @@ pipeline{
                     sh """
                         set -e
                         URL="${APP_URL}"
-                        curl --fail --max-time 10 "\$URL/health"
+                        curl --fail --max-time 10 "\$URL/healthz"
                         curl -s --max-time 10 "\$URL" | grep -q "ShopSphere"
                     """
                 }

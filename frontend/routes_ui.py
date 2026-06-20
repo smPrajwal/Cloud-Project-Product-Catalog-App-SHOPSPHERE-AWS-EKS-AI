@@ -37,9 +37,24 @@ def about():
 def product_detail(slug):
     return render_template('pages/product.html', product_id=slug, footer=FOOTER)
 
-@ui_bp.route('/health')
-def health():
+@ui_bp.route('/healthz')
+def healthz():
+    """Liveness probe - confirms the process is running."""
     return "OK", 200
+
+@ui_bp.route('/readyz')
+def readyz():
+    """Readiness probe - confirms backend API is reachable."""
+    try:
+        url = os.environ.get('BACKEND_API_URL')
+        if not url:
+            return "Backend URL not configured", 503
+        resp = requests.get(f'{url}/healthz', timeout=3)
+        if resp.status_code == 200:
+            return "OK", 200
+        return f"Backend not ready: {resp.status_code}", 503
+    except Exception as e:
+        return f"Backend unreachable: {e}", 503
 
 # --- Admin & Proxy ---
 @ui_bp.route('/admin-auth')

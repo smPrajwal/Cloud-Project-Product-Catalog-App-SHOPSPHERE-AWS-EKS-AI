@@ -23,11 +23,26 @@ spec:
           requests:
             cpu: 100m
             memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
         envFrom:
         - configMapRef:
           name: shopsphere-app-cm
         - secretRef:
           name: shopsphere-app-secret
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
 
 ---
 apiVersion: v1
