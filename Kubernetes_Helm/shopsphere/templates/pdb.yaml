@@ -1,0 +1,12 @@
+{{- range $name, $values := .Values.services }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $values.deploymentName }}-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      {{ $values.label }}
+---
+{{- end }}
