@@ -14,6 +14,16 @@ spec:
       labels:
         {{ $values.label }}
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ $name }}
+            topologyKey: kubernetes.io/hostname
       containers:
       - name: {{ $values.deploymentName }}
         image: {{ $values.imageName }}:{{ $values.imageVersion }}
